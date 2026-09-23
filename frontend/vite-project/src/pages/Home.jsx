@@ -1,57 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext.jsx";
+import Navbar from "../components/Navbar.jsx";
 
 function Home() {
 
-    const { logout, logoutLoading } = useAuth();
-
+    const {user } = useAuth();
+    if (!user) {
+        return <p>laoding...</p>
+    }
 
     return (
         <div className="min-h-screen bg-[#F7F5EE] text-[#20281F]">
 
             {/* Navbar */}
-            <nav className="flex items-center justify-between px-8 py-5 bg-white border-b border-[#DFE4D6]">
-
-                {/* Logo */}
-                <h1 className="text-2xl font-serif">
-                    <Link to="/">
-                        shopkart<span className="text-[#B98A3E]">.</span>
-                    </Link>
-                </h1>
-
-                {/* Center navigation */}
-                <div className="absolute left-1/2 -translate-x-1/2 flex gap-6 font-sans text-sm">
-
-                    <Link
-                        to="/home"
-                        className="text-[#4A7856]"
-                    >
-                        Home
-                    </Link>
-
-                    <Link
-                        to="/products"
-                        className="hover:text-[#4A7856]"
-                    >
-                        Products
-                    </Link>
-                       
-                      
-                </div>
-
-                {/* Logout */}
-                <button
-                    className="hover:text-red-600 font-sans text-sm"
-                    onClick={logout}
-                    disabled={logoutLoading}
-                >
-
-                    {logoutLoading ? "Logging Out..." : "Logout"}
-                </button>
-
-            </nav>
-
+          <Navbar/>
 
             {/* Product Card */}
             <div className="min-h-[calc(100vh-80px)] flex items-center justify-center">

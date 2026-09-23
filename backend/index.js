@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import proudctRoutes from './routes/product.route.js'
+import wishlistRoutes from './routes/wishlist.route.js'
 dotenv.config();
 
 
@@ -17,6 +18,7 @@ app.use(cors({
 }))
 app.use('/customers',router)
 app.use('/products',proudctRoutes)
+app.use('/wishlist',wishlistRoutes)
 
 mongoose.connect(process.env.url).then(() => {
     console.log('Shopkart DB connected')

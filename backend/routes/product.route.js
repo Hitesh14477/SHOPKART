@@ -1,10 +1,10 @@
 import { createProduct, getProducts, ProductInfo } from '../controllers/product.controller.js'
 import express from 'express'
 
-const router=express.Router()
+const productRoutes=express.Router()
 
-router.post('/',createProduct)
-router.get('/',getProducts)
-router.get('/:id',ProductInfo)
+productRoutes.post('/',createProduct)
+productRoutes.get('/',getProducts)
+productRoutes.get('/:id',ProductInfo)
 
-export default router
+export default productRoutes

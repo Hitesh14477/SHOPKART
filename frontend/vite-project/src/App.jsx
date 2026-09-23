@@ -9,14 +9,17 @@ import PublicRoute from './components/PublicRoute.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import Products from './pages/Products.jsx'
 import ProductDetails from './pages/ProductDetails.jsx'
+import Wishlist from './pages/WishList.jsx'
+import { WishlistProvider } from './context/wishlistContext.jsx'
 
 
 
 function App() {
   return (
 
-    <BrowserRouter>
       <AuthProvider>
+    <BrowserRouter>
+        <WishlistProvider>
         <Routes>
           <Route path='/' element={<PublicRoute><Landing /></PublicRoute>} />
           <Route path='/login' element={<PublicRoute><Login /></PublicRoute>} />
@@ -24,9 +27,11 @@ function App() {
           <Route path='/home' element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path='/products' element={<ProtectedRoute><Products /></ProtectedRoute>} />
           <Route path='/products/:id' element={<ProtectedRoute><ProductDetails /></ProtectedRoute>} />
+            <Route path='/wishlist' element={<ProtectedRoute><Wishlist/></ProtectedRoute>} />
         </Routes>
-      </AuthProvider>
+        </WishlistProvider>
     </BrowserRouter>
+      </AuthProvider>
 
   )
 }

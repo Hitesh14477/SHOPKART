@@ -10,14 +10,13 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [logoutLoading, setLogoutLoading] = useState(false);
 
 
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                setLoading(true)
                 const response = await axiosInstance.get('/customers/me')
                 // console.log(response)
                 setUser(response.data.customer)

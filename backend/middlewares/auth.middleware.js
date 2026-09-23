@@ -9,7 +9,7 @@ const isAuthenticated = async (req,res,next) => {
           return  res.status(401).json({message:'No Token Found'})
         }
         const decoded=jwt.verify(token,process.env.jwt_secret)
-        const customer=await Customer.findById(decoded.userId).select("_id fullName email phone")
+        const customer=await Customer.findById(decoded.userId).select("-password")
         if(!customer){
          return res.status(404).json({message : 'No customer found'})
         }
