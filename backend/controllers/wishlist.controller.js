@@ -60,7 +60,7 @@ export const removeFromWishList = async (req, res) => {
         }
         const product = await Product.findById(productId)
         if (!product) {
-            return res.status(404).json({ message: " Product Not Found" })
+            return res.status(404).json({ message: " Product Not in WishList" })
         }
         const inWishList = currentUser.wishlist.some((id) => id.toString() === productId)
         if (!inWishList) {

@@ -26,11 +26,25 @@ const customerSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product"
     }
+  ],
+  cart:[
+    {
+      _id:false,
+   product: {
+       type: mongoose.Schema.Types.ObjectId,
+      ref: "Product"
+    },
+    quantity:{
+      type:Number,
+      default:1,
+      min:1
+    }
+  }
   ]
 
 
 
-})
+},{timestamps:true})
 const Customer = mongoose.model('Customer', customerSchema)
 export default Customer
 

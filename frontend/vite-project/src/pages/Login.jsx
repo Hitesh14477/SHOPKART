@@ -1,7 +1,7 @@
 import { use, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../axiosCalls/axios";
-import { useAuth } from "../Context/AuthContext";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function Login() {
     const [email, setEmail] = useState("");

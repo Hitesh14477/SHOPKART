@@ -1,78 +1,88 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { useWishlist } from "../context/wishlistContext";
+import { useWishlist } from "../context/wishlistContext.jsx";
+import { useCart } from "../context/CartContext.jsx";
+
+
+
 
 function ProductCard({ product }) {
-    const { WishList, addToWishlist, WishlistLoading } = useWishlist();
-    const inWishList=WishList.some((item)=> item._id===product._id)
+    const {
+        WishList,
+        addToWishlist,
+        WishlistLoading
+    } = useWishlist()
+
+    const { addToCart, cartLoading,cartErr } = useCart()
+
+    const inWishList = WishList.some(
+        (item) => item._id === product._id
+    );
+
     return (
-        <div className="group bg-white rounded-2xl overflow-hidden border border-[#E5E7DF] hover:shadow-xl transition-all duration-300">
 
-            {/* Image */}
-            <div className="relative overflow-hidden bg-gray-100">
-                <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+        <article className="group flex h-full flex-col overflow-hidden border border-[#E5E7DF] bg-white transition-colors duration-200 hover:border-[#BBC8B9]">
+            <Link to={`/products/${product._id}`} className="relative block overflow-hidden bg-[#F4F2EC]">
+                <div className="aspect-square overflow-hidden">
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                    />
+                </div>
+            </Link>
 
-                {/* Category */}
-                <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
-                    {product.category}
-                </span>
-            </div>
-
-            {/* Content */}
-            <div className="p-5">
-
-                <h2 className="text-lg font-semibold line-clamp-1">
-                    {product.name}
-                </h2>
-
-                <p className="text-sm text-gray-500 mt-2 line-clamp-2 min-h-[40px]">
-                    {product.description}
-                </p>
-
-                {/* Price + Stock */}
-                <div className="flex items-center justify-between mt-5">
-
-                    <p className="text-xl font-bold">
-                        ₹{product.price}
+            <div className="flex flex-1 flex-col p-4 sm:p-5">
+                <div className="mb-4">
+                    <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.08em] text-[#777A70]">
+                        {product.category}
                     </p>
-
-                    <p
-                        className={`text-xs font-medium px-2 py-1 rounded-full ${product.stock > 0
-                                ? "bg-green-100 text-green-700"
-                                : "bg-red-100 text-red-700"
-                            }`}
-                    >
-                        {product.stock > 0
-                            ? `${product.stock} left`
-                            : "Out of stock"}
-                    </p>
-
+                    <div className="min-w-0">
+                        <Link to={`/products/${product._id}`}>
+                            <h2 className="line-clamp-1 text-base font-semibold text-[#20281F] transition-colors group-hover:text-[#4A7856]">
+                                {product.name}
+                            </h2>
+                        </Link>
+                        <p className="mt-1.5 line-clamp-2 min-h-[2.5rem] text-sm leading-5 text-[#777A70]">
+                            {product.description}
+                        </p>
+                    </div>
                 </div>
 
-                {/* Wishlist */}
-                <button
-                    onClick={() => addToWishlist(product._id)}
-                      disabled={WishlistLoading === product._id}
-                    className="mt-5 w-full border border-[#20281F] text-[#20281F] py-3 rounded-lg hover:bg-[#20281F] hover:text-white transition"
-                >
-                   {WishlistLoading ===product._id ? "saving..." :inWishList?'Added to WishList':" ♡ Add to Wishlist" } 
-                </button>
+                <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#EEF0E9] pt-3">
+                    <p className="text-xl font-semibold text-[#20281F]">₹{product.price}</p>
+                    <p className={`text-xs ${product.stock > 0 ? "text-[#66806A]" : "text-[#9C5147]"}`}>
+                        {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
+                    </p>
+                </div>
 
-                {/* View Product */}
-                <Link to={`/products/${product._id}`}>
+                <div className="mt-4 grid grid-cols-[1fr_auto] gap-2">
                     <button
-                        className="mt-3 w-full bg-[#20281F] text-white py-3 rounded-lg hover:bg-[#4A7856] transition"
+                        onClick={() => addToCart(product._id)}
+                        disabled={cartLoading === product._id}
+                        className="rounded-md bg-[#20281F] px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#4A7856] disabled:cursor-wait"
                     >
-                        View Product
+                        {cartLoading === product._id ? "Adding…" : "Add to cart"}
                     </button>
-                </Link>
+                    <button
+                        onClick={() => addToWishlist(product._id)}
+                        disabled={WishlistLoading === product._id}
+                        aria-label={inWishList ? "Remove from wishlist" : "Add to wishlist"}
+                        title={inWishList ? "Added to wishlist" : "Add to wishlist"}
+                        className={`flex min-w-11 items-center justify-center rounded-md border px-3 text-lg transition-colors disabled:cursor-wait ${inWishList ? "border-[#C9D8C9] bg-[#EDF3EC] text-[#4A7856]" : "border-[#E2E5DC] bg-white text-[#596057] hover:border-[#A9BEAA] hover:text-[#4A7856]"}`}
+                    >
+                        {WishlistLoading === product._id ? "…" : inWishList ? "♥" : "♡"}
+                    </button>
+                </div>
 
+                <Link
+                    to={`/products/${product._id}`}
+                    className="mt-2 block py-1.5 text-center text-xs font-medium text-[#687365] transition-colors hover:text-[#35573E]"
+                >
+                    View details <span aria-hidden="true">→</span>
+                </Link>
             </div>
-        </div>
+        </article>
     );
 }
 

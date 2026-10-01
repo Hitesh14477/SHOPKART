@@ -1,50 +1,75 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useWishlist } from "../context/wishlistContext";
+import { useCart } from "../context/CartContext.jsx";
 
-function WishlistCard({ product,toggleWishList}) {
+function WishlistCard({ product }) {
+
+    const { toggleWishList } = useWishlist();
+    const { addToCart, cartLoading } = useCart();
+    const navigate = useNavigate();
+
+    const handleViewProduct = async () => {
+        await toggleWishList(product._id);
+        navigate(`/products/${product._id}`);
+    };
+
     return (
-        <div className="bg-white rounded-xl border border-[#E5E7DF] overflow-hidden">
+        <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-[#E5E7DF] bg-white transition duration-200 hover:-translate-y-0.5 hover:border-[#C9D4C6] hover:shadow-md">
+            <div className="aspect-square overflow-hidden bg-[#F4F2EC]">
+                <img
+                    src={product.image}
+                    alt={product.name}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                />
+            </div>
 
-            {/* Image */}
-            <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-52 object-cover"
-            />
-
-            {/* Content */}
-            <div className="p-4">
-
-                <p className="text-xs text-[#4A7856]">
+            <div className="flex flex-1 flex-col p-4 sm:p-5">
+                <p className="text-[10px] font-medium uppercase tracking-[0.1em] text-[#777A70]">
                     {product.category}
                 </p>
 
-                <h2 className="text-lg font-semibold mt-1">
+                <h2 className="mt-1.5 line-clamp-1 text-base font-semibold text-[#20281F] transition-colors group-hover:text-[#4A7856]">
                     {product.name}
                 </h2>
 
-                <p className="text-xl font-bold mt-3">
-                    ₹{product.price}
-                </p>
+                <div className="mt-4 flex items-end justify-between gap-3 border-t border-[#EEF0E9] pt-3">
+                    <p className="text-xl font-semibold text-[#20281F]">
+                        ₹{product.price.toLocaleString("en-IN")}
+                    </p>
+                    <p className={`text-xs ${product.stock > 0 ? "text-[#66806A]" : "text-[#9C5147]"}`}>
+                        {product.stock > 0 ? "In stock" : "Out of stock"}
+                    </p>
+                </div>
 
-                {/* View Product */}
-                <Link to={`/products/${product._id}`}>
-                    <button className="w-full mt-4 bg-[#20281F] text-white py-2.5 rounded-lg hover:bg-[#4A7856] transition">
-                        View Product
-                    </button>
-                </Link>
-
-                {/* Remove */}
                 <button
                     onClick={() => toggleWishList(product._id)}
-                    className="w-full mt-2 border border-red-500 text-red-500 py-2.5 rounded-lg hover:bg-red-500 hover:text-white transition"
+                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#E8D8D3] bg-[#FBF7F5] py-2.5 text-sm font-medium text-[#8C5A50] transition-colors hover:border-[#D8B8AE] hover:bg-[#F8EFEC] hover:text-[#82473C]"
                 >
-                    ♥ Remove from Wishlist
+                    
+                   ♡ Remove from wishlist
                 </button>
 
-            </div>
+                <button
+                    onClick={() => addToCart(product._id)}
+                    disabled={cartLoading === product._id || product.stock <= 0}
+                    className="mt-4 w-full rounded-md bg-[#20281F] py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#4A7856] disabled:cursor-not-allowed disabled:bg-[#AEB3A8]"
+                >
+                    {cartLoading === product._id
+                        ? "Adding..."
+                        : product.stock <= 0
+                            ? "Out of stock"
+                            : "Add to cart"}
+                </button>
 
-        </div>
+                <button
+                    onClick={handleViewProduct}
+                    className="mt-2 block w-full py-1.5 text-center text-xs font-medium text-[#687365] transition-colors hover:text-[#35573E]"
+                >
+                    View details <span aria-hidden="true">→</span>
+                </button>
+            </div>
+        </article>
     );
 }
 

@@ -15,20 +15,31 @@ export const AuthProvider = ({ children }) => {
 
 
     useEffect(() => {
+        let isCurrent = true;
+
         const checkAuth = async () => {
             try {
                 const response = await axiosInstance.get('/customers/me')
-                // console.log(response)
-                setUser(response.data.customer)
+                if (isCurrent) {
+                    setUser(response.data.customer)
+                }
             }
             catch (error) {
-                setUser(null)
+                if (isCurrent) {
+                    setUser(null)
+                }
             }
             finally {
-                setLoading(false)
+                if (isCurrent) {
+                    setLoading(false)
+                }
             }
         }
         checkAuth()
+
+        return () => {
+            isCurrent = false;
+        }
     }, [])
 
     const login = async (loginData) => {
@@ -37,7 +48,7 @@ export const AuthProvider = ({ children }) => {
                 "/customers/login",
                 loginData
             );
-            console.log(response.data.customer)
+            // console.log(response.data.customer)
             setUser(response.data.customer);
             return response.data.customer;
         } catch (error) {
@@ -45,6 +56,12 @@ export const AuthProvider = ({ children }) => {
             throw error
         }
 
+    };
+
+    const updateProfile = async (profileData) => {
+        const response = await axiosInstance.patch("/customers/profile", profileData);
+        setUser(response.data.customer);
+        return response.data.customer;
     };
 
     const logout = async () => {
@@ -66,7 +83,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, loading, login, logout, logoutLoading }}>
+        <AuthContext.Provider value={{ user, setUser, loading, login, updateProfile, logout, logoutLoading }}>
             {children}
         </AuthContext.Provider>
     )

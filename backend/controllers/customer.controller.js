@@ -81,6 +81,31 @@ export const getCustomer = (req, res) => {
     res.status(200).json({success:true,customer:req.customer})
 }
 
+export const updateCustomer = async (req, res) => {
+    try {
+        const name = req.body.name?.trim();
+        const phone = req.body.phone?.trim();
+
+        if (!name || !phone) {
+            return res.status(400).json({ message: "Name and phone are required" });
+        }
+
+        const updatedCustomer = await Customer.findByIdAndUpdate(
+            req.customer._id,
+            { $set: { name, phone } },
+            { new: true, runValidators: true }
+        ).select("-password");
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            customer: updatedCustomer
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Unable to update profile" });
+    }
+};
+
 export const logoutCustomer = (req, res) => {
     res.clearCookie("token", cookieOptions);
 
